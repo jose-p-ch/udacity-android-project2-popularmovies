@@ -9,6 +9,9 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity {
 
     ImageView paintingImageView;
@@ -24,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         Picasso picasso = picassoBuilder.listener(new Picasso.Listener() {
             @Override
             public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-                Log.d("PopularMovies - Picasso Log: ", exception.toString());
+                Log.d("PopularMovies Picasso", exception.toString());
             }
         }).build();
 
@@ -32,5 +35,14 @@ public class MainActivity extends AppCompatActivity {
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher_round)
                 .into(paintingImageView);
+
+        URL url = NetworkUtils.buildPopularQueryUrl();
+        String httpResult = "httpResultBlank";
+        try {
+            httpResult = NetworkUtils.getResponseFromHttpUrl(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d("JSONpile", httpResult);
     }
 }
