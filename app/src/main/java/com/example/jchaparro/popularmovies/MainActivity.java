@@ -2,6 +2,7 @@ package com.example.jchaparro.popularmovies;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,12 +38,32 @@ public class MainActivity extends AppCompatActivity {
                 .into(paintingImageView);
 
         URL url = NetworkUtils.buildPopularQueryUrl();
-        String httpResult = "httpResultBlank";
-        try {
-            httpResult = NetworkUtils.getResponseFromHttpUrl(url);
-        } catch (IOException e) {
-            e.printStackTrace();
+        new MovieLoad().execute(url);
+    }
+
+    private class MovieLoad extends AsyncTask<URL, Void, String>{
+        @Override
+        protected String doInBackground(URL... params) {
+            URL searchUrl = params[0];
+            String httpResult = null;
+            try {
+                httpResult = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return httpResult;
         }
-        Log.d("JSONpile", httpResult);
+
+        // COMPLETED (3) Override onPostExecute to display the results in the TextView
+        @Override
+        protected void onPostExecute(String httpResult) {
+            if (httpResult != null && !httpResult.equals("")) {
+                //mSearchResultsTextView.setText(githubSearchResults);
+                Log.d("JSONpile", httpResult);
+            }
+            else {
+                Log.d("JSONpile", "Blank or null results");
+            }
+        }
     }
 }
