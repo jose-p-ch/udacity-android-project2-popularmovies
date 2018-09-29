@@ -7,8 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,11 +19,15 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity {
 
     ImageView paintingImageView;
+    String jsonString;
+    TextView defaultTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        defaultTextView = (TextView) findViewById(R.id.tv_default);
 
         paintingImageView = (ImageView) findViewById(R.id.iv_painting);
         Picasso.Builder picassoBuilder = new Picasso.Builder(this);
@@ -59,7 +66,14 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String httpResult) {
             if (httpResult != null && !httpResult.equals("")) {
                 //mSearchResultsTextView.setText(githubSearchResults);
-                Log.d("JSONpile", httpResult);
+                jsonString = httpResult;
+                //defaultTextView.setText(jsonString);
+                //Log.d("JSONpile", httpResult);
+                try {
+                    JsonUtils.parseJsonResults(jsonString);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             else {
                 Log.d("JSONpile", "Blank or null results");
