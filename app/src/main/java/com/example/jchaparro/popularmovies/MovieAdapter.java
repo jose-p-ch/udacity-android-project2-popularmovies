@@ -3,6 +3,7 @@ package com.example.jchaparro.popularmovies;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private static final String TAG = MovieAdapter.class.getSimpleName();
     final private GridItemClickListener mOnClickListener;
     Movie[] movieArray;
+    int width;
 
     public interface GridItemClickListener {
         void onListItemClick(int clickedItemIndex);
@@ -30,6 +32,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         //mNumberItems = numberOfItems;
         mOnClickListener = listener;
         //viewHolderCount = 0;
+        //width = w;
+        //Log.d("RV width", String.valueOf(width));
+    }
+    public void setWidth(int w){
+        width = w;
+        Log.d("RV width", String.valueOf(width));
     }
 
     public void setMovieArray(List<String> movies){
@@ -58,7 +66,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
-        //holder.movieString.setText(movieArray[position].getPoster());
+        int targetWidth = 300;
+        if(width > 0)
+            targetWidth = width / 3;
+        int targetHegiht = targetWidth * 278 / 185;
         Picasso.Builder picassoBuilder = new Picasso.Builder(holder.posterView.getContext());
 
         Picasso picasso = picassoBuilder.listener(new Picasso.Listener() {
@@ -67,10 +78,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 Log.d("PopularMovies Picasso", exception.toString());
             }
         }).build();
-        String path = "https://image.tmdb.org/t/p/w500" + movieArray[position].getPoster();
+        String path = "https://image.tmdb.org/t/p/w185" + movieArray[position].getPoster();
         picasso.load(path)
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher_round)
+                .resize(targetWidth,targetHegiht)
                 .into(holder.posterView);
     }
 

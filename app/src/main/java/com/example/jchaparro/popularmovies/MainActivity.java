@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
     //ImageView paintingImageView;
     String jsonString;
     int page = 1;
+    String sort_by = "popularity.desc"; //or vote_average.desc
     //TextView defaultTextView;
     private RecyclerView posterGrid;
     private MovieAdapter mAdapter;
@@ -53,11 +54,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
         GridLayoutManager posterLayoutManager = new GridLayoutManager(this, 3);
         posterGrid.setLayoutManager(posterLayoutManager);
         posterGrid.setHasFixedSize(true);
+        //int width = posterGrid.getMeasuredWidth();
 
         mAdapter = new MovieAdapter(this);
         posterGrid.setAdapter(mAdapter);
 
-        URL url = NetworkUtils.buildPopularQueryUrl(String.valueOf(page));
+        loadPosterData();
+    }
+
+    void loadPosterData(){
+        URL url = NetworkUtils.buildPopularQueryUrl(String.valueOf(page), sort_by);
         new MovieLoad().execute(url);
     }
 
@@ -89,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
                 //Log.d("JSONpile", httpResult);
                 try {
                     mAdapter.setMovieArray(JsonUtils.parseJsonResults(jsonString));
+                    int width = posterGrid.getMeasuredWidth();
+                    mAdapter.setWidth(width);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
