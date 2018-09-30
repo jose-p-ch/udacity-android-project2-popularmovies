@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">PopularMovies</string>
+    <string name="app_name">Popular Movies</string>
+    <string name="action_nextpage">more</string>
+    <string name="action_proviouspage">back</string>
 </resources>

@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.RecyclerView;
@@ -20,11 +22,10 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.GridItemClickListener{
 
-    //ImageView paintingImageView;
     String jsonString;
     int page = 1;
     String sort_by = "popularity.desc"; //or vote_average.desc
-    //TextView defaultTextView;
+
     private RecyclerView posterGrid;
     private MovieAdapter mAdapter;
 
@@ -33,23 +34,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*defaultTextView = (TextView) findViewById(R.id.tv_default);
-
-        paintingImageView = (ImageView) findViewById(R.id.iv_painting);
-        Picasso.Builder picassoBuilder = new Picasso.Builder(this);
-
-        Picasso picasso = picassoBuilder.listener(new Picasso.Listener() {
-            @Override
-            public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-                Log.d("PopularMovies Picasso", exception.toString());
-            }
-        }).build();
-
-        picasso.load("http://i.imgur.com/DvpvklR.png")
-                .placeholder(R.mipmap.ic_launcher)
-                .error(R.mipmap.ic_launcher_round)
-                .into(paintingImageView);
-*/
         posterGrid = (RecyclerView) findViewById(R.id.rv_posters);
         GridLayoutManager posterLayoutManager = new GridLayoutManager(this, 3);
         posterGrid.setLayoutManager(posterLayoutManager);
@@ -65,6 +49,34 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
     void loadPosterData(){
         URL url = NetworkUtils.buildPopularQueryUrl(String.valueOf(page), sort_by);
         new MovieLoad().execute(url);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+            /*
+             * When you click the reset menu item, we want to start all over
+             * and display the pretty gradient again. There are a few similar
+             * ways of doing this, with this one being the simplest of those
+             * ways. (in our humble opinion)
+             */
+            case R.id.action_nextpage:
+                // COMPLETED (14) Pass in this as the ListItemClickListener to the GreenAdapter constructor
+                page++;
+                loadPosterData();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
