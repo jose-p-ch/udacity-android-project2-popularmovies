@@ -1,13 +1,16 @@
 package com.example.jchaparro.popularmovies;
 
-public class Movie {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Movie implements Parcelable {
     private String title;
     private String poster;
     private String synopsis;
     private double rating;
     private String date;
 
-    public Movie (String title, String poster, String synopsis, double rating, String date){
+    protected Movie (String title, String poster, String synopsis, double rating, String date){
         this.title = title;
         this.poster = poster;
         this.synopsis = synopsis;
@@ -52,23 +55,37 @@ public class Movie {
         return false;
     }
 
-    public String getTitle(){
+    protected String getTitle(){
         return title;
     }
 
-    public String getPoster() {
+    protected String getPoster() {
         return poster;
     }
 
-    public String getSynopsis() {
+    protected String getSynopsis() {
         return synopsis;
     }
 
-    public double getRating() {
+    double getRating() {
         return rating;
     }
 
-    public String getDate() {
+    protected String getDate() {
         return date;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(poster);
+        dest.writeString(synopsis);
+        dest.writeDouble(rating);
+        dest.writeString(date);
     }
 }

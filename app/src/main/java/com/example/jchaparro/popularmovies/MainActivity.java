@@ -5,9 +5,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.support.v7.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
@@ -16,18 +18,21 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.GridItemClickListener{
 
-    ImageView paintingImageView;
+    //ImageView paintingImageView;
     String jsonString;
-    TextView defaultTextView;
+    int page = 1;
+    //TextView defaultTextView;
+    private RecyclerView posterGrid;
+    private MovieAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        defaultTextView = (TextView) findViewById(R.id.tv_default);
+        /*defaultTextView = (TextView) findViewById(R.id.tv_default);
 
         paintingImageView = (ImageView) findViewById(R.id.iv_painting);
         Picasso.Builder picassoBuilder = new Picasso.Builder(this);
@@ -43,9 +48,22 @@ public class MainActivity extends AppCompatActivity {
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher_round)
                 .into(paintingImageView);
+*/
+        posterGrid = (RecyclerView) findViewById(R.id.rv_posters);
+        GridLayoutManager posterLayoutManager = new GridLayoutManager(this, 3);
+        posterGrid.setLayoutManager(posterLayoutManager);
+        posterGrid.setHasFixedSize(true);
 
-        URL url = NetworkUtils.buildPopularQueryUrl();
+        mAdapter = new MovieAdapter(this);
+        posterGrid.setAdapter(mAdapter);
+
+        URL url = NetworkUtils.buildPopularQueryUrl(String.valueOf(page));
         new MovieLoad().execute(url);
+    }
+
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+
     }
 
     private class MovieLoad extends AsyncTask<URL, Void, String>{
@@ -70,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 //defaultTextView.setText(jsonString);
                 //Log.d("JSONpile", httpResult);
                 try {
-                    JsonUtils.parseJsonResults(jsonString);
+                    mAdapter.setMovieArray(JsonUtils.parseJsonResults(jsonString));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

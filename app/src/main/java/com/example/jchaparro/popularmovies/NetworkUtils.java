@@ -16,10 +16,11 @@ public class NetworkUtils {
     final static String popularSort = "popular";
     final static String myApiKey = "test"; //fill in a movie database API key here
 
-    public static URL buildPopularQueryUrl(){
+    public static URL buildPopularQueryUrl(String page){
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendPath(popularSort)
                 .appendQueryParameter("api_key",myApiKey)
+                .appendQueryParameter("page", page)
                 .build();
         URL url = null;
         try {
