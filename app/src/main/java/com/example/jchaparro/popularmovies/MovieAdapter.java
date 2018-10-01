@@ -25,7 +25,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     int width;
 
     public interface GridItemClickListener {
-        void onListItemClick(int clickedItemIndex);
+        void onGridItemClick(Movie movieClicked);
     }
 
     public MovieAdapter (GridItemClickListener listener){
@@ -106,7 +106,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         @Override
         public void onClick(View v) {
-
+            int adapterPosition = getAdapterPosition();
+            Movie movieClicked = movieArray[adapterPosition];
+            mOnClickListener.onGridItemClick(movieClicked);
         }
     }
 }

@@ -18,6 +18,14 @@ public class Movie implements Parcelable {
         this.date = date;
     }
 
+    public Movie(Parcel in) {
+        title = in.readString();
+        poster = in.readString();
+        synopsis = in.readString();
+        rating = in.readDouble();
+        date = in.readString();
+    }
+
     public boolean setTitle(String s){
         if(s != null && !s.equals("")){
             title = s;
@@ -88,4 +96,15 @@ public class Movie implements Parcelable {
         dest.writeDouble(rating);
         dest.writeString(date);
     }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

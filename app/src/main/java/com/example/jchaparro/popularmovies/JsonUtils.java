@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonUtils {
+class JsonUtils {
     public static Movie parseMovieJson(String json) throws JSONException{
         JSONObject jMovie = new JSONObject(json);
         return new Movie(
@@ -21,7 +21,7 @@ public class JsonUtils {
         );
     }
 
-    public static ArrayList<String> parseJsonResults(String json) throws JSONException {
+    static ArrayList<String> parseJsonResults(String json) throws JSONException {
         JSONObject resultsPage = new JSONObject(json);
         JSONArray results = resultsPage.getJSONArray("results");
         ArrayList<String> stringResults = new ArrayList<String>();

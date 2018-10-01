@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Popular Movies</string>
     <string name="action_nextpage">more</string>
-    <string name="action_proviouspage">back</string>
+    <string name="action_previouspage">back</string>
+    <string name="action_popularsort">Sort by Popular</string>
+    <string name="action_votesort">Sort by Rating</string>
 </resources>

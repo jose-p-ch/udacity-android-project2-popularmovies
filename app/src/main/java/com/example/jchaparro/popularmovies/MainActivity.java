@@ -1,6 +1,7 @@
 package com.example.jchaparro.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -9,11 +10,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.support.v7.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
+import android.support.v7.widget.RecyclerView;
 
 import org.json.JSONException;
 
@@ -22,9 +20,10 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.GridItemClickListener{
 
-    String jsonString;
-    int page = 1;
-    String sort_by = "popularity.desc"; //or vote_average.desc
+    //private String jsonString;
+    private int page = 1;
+    private String sort_by = "popularity.desc"; //or vote_average.desc
+    //ArrayList<String> moviesJson;
 
     private RecyclerView posterGrid;
     private MovieAdapter mAdapter;
@@ -74,14 +73,35 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
                 page++;
                 loadPosterData();
                 return true;
+            case R.id.action_previouspage:
+                if(page > 1){
+                    page--;
+                loadPosterData();
+                }
+                return true;
+            case R.id.action_votesort:
+                sort_by = "vote_average.desc";
+                page = 1;
+                loadPosterData();
+                return true;
+            case R.id.action_popularsort:
+                sort_by = "popularity.desc";
+                page = 1;
+                loadPosterData();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onListItemClick(int clickedItemIndex) {
-
+    public void onGridItemClick(Movie movieClicked) {
+        Context context = this;
+        Class destinationClass = MovieDetail.class;
+        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
+        // COMPLETED (1) Pass the weather to the DetailActivity
+        intentToStartDetailActivity.putExtra("Movie", movieClicked);
+        startActivity(intentToStartDetailActivity);
     }
 
     private class MovieLoad extends AsyncTask<URL, Void, String>{
@@ -102,10 +122,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
         protected void onPostExecute(String httpResult) {
             if (httpResult != null && !httpResult.equals("")) {
                 //mSearchResultsTextView.setText(githubSearchResults);
-                jsonString = httpResult;
+                String jsonString = httpResult;
                 //defaultTextView.setText(jsonString);
                 //Log.d("JSONpile", httpResult);
                 try {
+                    //moviesJson = ;
                     mAdapter.setMovieArray(JsonUtils.parseJsonResults(jsonString));
                     int width = posterGrid.getMeasuredWidth();
                     mAdapter.setWidth(width);

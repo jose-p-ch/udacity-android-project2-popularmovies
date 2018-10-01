@@ -20,7 +20,22 @@
       tools:context=".MainActivity">
     <item
         android:id="@+id/action_nextpage"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:title="@string/action_nextpage"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_previouspage"
+        android:orderInCategory="1"
+        android:title="@string/action_previouspage"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_popularsort"
+        android:orderInCategory="3"
+        android:title="@string/action_popularsort"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_votesort"
+        android:orderInCategory="4"
+        android:title="@string/action_votesort"
         app:showAsAction="ifRoom"/>
 </menu>
