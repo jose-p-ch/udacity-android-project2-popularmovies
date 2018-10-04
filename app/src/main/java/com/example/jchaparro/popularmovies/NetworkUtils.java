@@ -12,16 +12,15 @@ import java.util.Scanner;
 
 public class NetworkUtils {
 
-    final static String BASE_URL = "https://api.themoviedb.org/3/discover/movie";
+    final static String BASE_URL = "https://api.themoviedb.org/3/movie/";
             //"https://api.themoviedb.org/3/movie/";
     //final static String popularSort = "popular";
     final static String myApiKey = "test"; //fill in a movie database API key here
 
     public static URL buildPopularQueryUrl(String page, String sort_by){
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                //.appendPath(popularSort)
+                .appendPath(sort_by)
                 .appendQueryParameter("api_key",myApiKey)
-                .appendQueryParameter("sort_by", sort_by)
                 .appendQueryParameter("page", page)
                 .build();
         URL url = null;

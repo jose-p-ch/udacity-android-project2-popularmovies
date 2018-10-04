@@ -7,7 +7,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,7 +24,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
 
     //private String jsonString;
     private int page = 1;
-    private String sort_by = "popularity.desc"; //or vote_average.desc
+    private String sort_by = "popular"; //or vote_average.desc
+    private int posterWidth = 400;
     //ArrayList<String> moviesJson;
 
     private RecyclerView posterGrid;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
         setContentView(R.layout.activity_main);
 
         posterGrid = (RecyclerView) findViewById(R.id.rv_posters);
-        GridLayoutManager posterLayoutManager = new GridLayoutManager(this, 3);
+        GridLayoutManager posterLayoutManager = new GridLayoutManager(this, calculateBestSpanCount(posterWidth));
         posterGrid.setLayoutManager(posterLayoutManager);
         posterGrid.setHasFixedSize(true);
         //int width = posterGrid.getMeasuredWidth();
@@ -48,6 +51,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
     void loadPosterData(){
         URL url = NetworkUtils.buildPopularQueryUrl(String.valueOf(page), sort_by);
         new MovieLoad().execute(url);
+    }
+
+    private int calculateBestSpanCount(int posterWidth) {
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+        float screenWidth = outMetrics.widthPixels;
+        return Math.round(screenWidth / posterWidth);
     }
 
     @Override
@@ -80,12 +91,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
                 }
                 return true;
             case R.id.action_votesort:
-                sort_by = "vote_average.desc";
+                sort_by = "top_rated";
                 page = 1;
                 loadPosterData();
                 return true;
             case R.id.action_popularsort:
-                sort_by = "popularity.desc";
+                sort_by = "popular";
                 page = 1;
                 loadPosterData();
                 return true;

@@ -29,7 +29,7 @@ class JsonUtils {
             for(int i = 0; i < results.length(); i++){
                 try {
                     stringResults.add(results.getString(i));
-                    Log.d("MovieString",results.getString(i));
+                    //Log.d("MovieString",results.getString(i));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
