@@ -29,11 +29,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     public MovieAdapter (GridItemClickListener listener){
-        //mNumberItems = numberOfItems;
         mOnClickListener = listener;
-        //viewHolderCount = 0;
-        //width = w;
-        //Log.d("RV width", String.valueOf(width));
     }
     public void setWidth(int w){
         width = w;
@@ -70,16 +66,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         if(width > 0)
             targetWidth = width / 3;
         int targetHegiht = targetWidth * 278 / 185;
-        Picasso.Builder picassoBuilder = new Picasso.Builder(holder.posterView.getContext());
 
-        Picasso picasso = picassoBuilder.listener(new Picasso.Listener() {
-            @Override
-            public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-                Log.d("PopularMovies Picasso", exception.toString());
-            }
-        }).build();
         String path = "https://image.tmdb.org/t/p/w185" + movieArray[position].getPoster();
-        picasso.load(path)
+        Picasso.with(holder.posterView.getContext()).load(path)
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher_round)
                 .resize(targetWidth,targetHegiht)
@@ -94,12 +83,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        //public TextView movieString;
         public ImageView posterView;
 
         public MovieViewHolder(View v){
             super(v);
-            //movieString = (TextView) v.findViewById(R.id.tv_movie_string);
             posterView = (ImageView) v.findViewById(R.id.iv_poster);
             v.setOnClickListener(this);
         }

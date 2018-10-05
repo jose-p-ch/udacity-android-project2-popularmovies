@@ -1,8 +1,10 @@
 package com.example.jchaparro.popularmovies;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +16,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import org.json.JSONException;
 
@@ -22,13 +26,13 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.GridItemClickListener{
 
-    //private String jsonString;
     private int page = 1;
     private String sort_by = "popular"; //or vote_average.desc
     private int posterWidth = 400;
-    //ArrayList<String> moviesJson;
 
-    private RecyclerView posterGrid;
+    private TextView mErrorMessageDisplay;
+
+    private RecyclerView mRecyclerViewPosters;
     private MovieAdapter mAdapter;
 
     @Override
@@ -36,21 +40,48 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        posterGrid = (RecyclerView) findViewById(R.id.rv_posters);
+        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
+
+        mRecyclerViewPosters = (RecyclerView) findViewById(R.id.rv_posters);
         GridLayoutManager posterLayoutManager = new GridLayoutManager(this, calculateBestSpanCount(posterWidth));
-        posterGrid.setLayoutManager(posterLayoutManager);
-        posterGrid.setHasFixedSize(true);
-        //int width = posterGrid.getMeasuredWidth();
+        mRecyclerViewPosters.setLayoutManager(posterLayoutManager);
+        mRecyclerViewPosters.setHasFixedSize(true);
 
         mAdapter = new MovieAdapter(this);
-        posterGrid.setAdapter(mAdapter);
+        mRecyclerViewPosters.setAdapter(mAdapter);
 
         loadPosterData();
     }
 
     void loadPosterData(){
         URL url = NetworkUtils.buildPopularQueryUrl(String.valueOf(page), sort_by);
-        new MovieLoad().execute(url);
+        ConnectivityManager cm =
+                (ConnectivityManager)(this).getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        @SuppressLint("MissingPermission")
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnected();
+        Log.d("NetworkCheck", String.valueOf(isConnected));
+        if(isConnected) {
+            new MovieLoad().execute(url);
+            showRecyclerView();
+        }
+        else {
+            showErrorMessage();
+        }
+    }
+
+    private void showErrorMessage() {
+        /* First, hide the currently visible data */
+        mRecyclerViewPosters.setVisibility(View.INVISIBLE);
+        /* Then, show the error */
+        mErrorMessageDisplay.setVisibility(View.VISIBLE);
+    }
+
+    private void showRecyclerView() {
+        mRecyclerViewPosters.setVisibility(View.VISIBLE);
+        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
     }
 
     private int calculateBestSpanCount(int posterWidth) {
@@ -73,14 +104,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
         int itemId = item.getItemId();
 
         switch (itemId) {
-            /*
-             * When you click the reset menu item, we want to start all over
-             * and display the pretty gradient again. There are a few similar
-             * ways of doing this, with this one being the simplest of those
-             * ways. (in our humble opinion)
-             */
             case R.id.action_nextpage:
-                // COMPLETED (14) Pass in this as the ListItemClickListener to the GreenAdapter constructor
                 page++;
                 loadPosterData();
                 return true;
@@ -110,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
         Context context = this;
         Class destinationClass = MovieDetail.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        // COMPLETED (1) Pass the weather to the DetailActivity
+
         intentToStartDetailActivity.putExtra("Movie", movieClicked);
         startActivity(intentToStartDetailActivity);
     }
@@ -128,18 +152,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
             return httpResult;
         }
 
-        // COMPLETED (3) Override onPostExecute to display the results in the TextView
         @Override
         protected void onPostExecute(String httpResult) {
             if (httpResult != null && !httpResult.equals("")) {
-                //mSearchResultsTextView.setText(githubSearchResults);
                 String jsonString = httpResult;
-                //defaultTextView.setText(jsonString);
-                //Log.d("JSONpile", httpResult);
                 try {
-                    //moviesJson = ;
                     mAdapter.setMovieArray(JsonUtils.parseJsonResults(jsonString));
-                    int width = posterGrid.getMeasuredWidth();
+                    int width = mRecyclerViewPosters.getMeasuredWidth();
                     mAdapter.setWidth(width);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -147,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Grid
             }
             else {
                 Log.d("JSONpile", "Blank or null results");
+                showErrorMessage();
             }
         }
     }

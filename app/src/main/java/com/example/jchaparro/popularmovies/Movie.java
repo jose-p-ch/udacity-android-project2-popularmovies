@@ -4,31 +4,31 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Movie implements Parcelable {
-    private String title;
-    private String poster;
-    private String synopsis;
-    private double rating;
-    private String date;
+    private String mTitle;
+    private String mPoster;
+    private String mSynopsis;
+    private double mRating;
+    private String mDate;
 
     protected Movie (String title, String poster, String synopsis, double rating, String date){
-        this.title = title;
-        this.poster = poster;
-        this.synopsis = synopsis;
-        this.rating = rating;
-        this.date = date;
+        this.mTitle = title;
+        this.mPoster = poster;
+        this.mSynopsis = synopsis;
+        this.mRating = rating;
+        this.mDate = date;
     }
 
     public Movie(Parcel in) {
-        title = in.readString();
-        poster = in.readString();
-        synopsis = in.readString();
-        rating = in.readDouble();
-        date = in.readString();
+        mTitle = in.readString();
+        mPoster = in.readString();
+        mSynopsis = in.readString();
+        mRating = in.readDouble();
+        mDate = in.readString();
     }
 
     public boolean setTitle(String s){
         if(s != null && !s.equals("")){
-            title = s;
+            mTitle = s;
             return true;
         }
         return false;
@@ -36,7 +36,7 @@ public class Movie implements Parcelable {
 
     public boolean setPoster(String s){
         if(s != null && !s.equals("")){
-            poster = s;
+            mPoster = s;
             return true;
         }
         return false;
@@ -44,43 +44,43 @@ public class Movie implements Parcelable {
 
     public boolean setSynopsis(String s){
         if(s != null && !s.equals("")){
-            synopsis = s;
+            mSynopsis = s;
             return true;
         }
         return false;
     }
 
     public boolean setRating(double d){
-            rating = d;
+            mRating = d;
             return true;
     }
 
     public boolean setDate(String s){
         if(s != null && !s.equals("")){
-            date = s;
+            mDate = s;
             return true;
         }
         return false;
     }
 
     protected String getTitle(){
-        return title;
+        return mTitle;
     }
 
     protected String getPoster() {
-        return poster;
+        return mPoster;
     }
 
     protected String getSynopsis() {
-        return synopsis;
+        return mSynopsis;
     }
 
     double getRating() {
-        return rating;
+        return mRating;
     }
 
     protected String getDate() {
-        return date;
+        return mDate;
     }
 
     @Override
@@ -90,11 +90,11 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(poster);
-        dest.writeString(synopsis);
-        dest.writeDouble(rating);
-        dest.writeString(date);
+        dest.writeString(mTitle);
+        dest.writeString(mPoster);
+        dest.writeString(mSynopsis);
+        dest.writeDouble(mRating);
+        dest.writeString(mDate);
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {

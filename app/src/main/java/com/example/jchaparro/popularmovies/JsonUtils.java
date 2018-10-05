@@ -13,11 +13,11 @@ class JsonUtils {
     public static Movie parseMovieJson(String json) throws JSONException{
         JSONObject jMovie = new JSONObject(json);
         return new Movie(
-                jMovie.getString("title"),
-                jMovie.getString("poster_path"),
-                jMovie.getString("overview"),
-                jMovie.getDouble("vote_average"),
-                jMovie.getString("release_date")
+                jMovie.optString("title"),
+                jMovie.optString("poster_path"),
+                jMovie.optString("overview"),
+                jMovie.optDouble("vote_average"),
+                jMovie.optString("release_date")
         );
     }
 
